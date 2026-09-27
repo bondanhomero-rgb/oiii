@@ -17,8 +17,8 @@ def _pasta_base(args) -> Path:
     return Path(args.pasta or os.environ.get("PJE_ROBO_DIR") or Path.cwd())
 
 
-def _canal(args) -> Canal:
-    return Canal(_pasta_base(args) / "estado")
+def _canal(args, eco: bool = False) -> Canal:
+    return Canal(_pasta_base(args) / "estado", eco=eco)
 
 
 def _imprimir(dados) -> None:
@@ -160,7 +160,7 @@ def cmd_executar(args) -> int:
     from .config import tribunal
     from .login import fazer_login, preparar_api
 
-    canal = _canal(args)
+    canal = _canal(args, eco=True)
     if canal.em_andamento_recente() and not args.forcar:
         print("Já existe um robô rodando (veja `python -m robo_pje status`). Use --forcar se ele travou.",
               file=sys.stderr)
@@ -224,7 +224,7 @@ def cmd_mapear(args) -> int:
     from .login import fazer_login
     from .navegador import RegistroChamadas
 
-    canal = _canal(args)
+    canal = _canal(args, eco=True)
     canal.reiniciar()
     args.oculto = False  # o usuário precisa ver e navegar
     trib = tribunal(args.tribunal, args.grau, args.base_url)

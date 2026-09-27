@@ -86,3 +86,12 @@ def test_em_andamento_recente(tmp_path):
     assert canal.em_andamento_recente()
     canal.status("concluido")
     assert not canal.em_andamento_recente()
+
+
+def test_eco_mostra_etapa_e_dica_do_codigo(tmp_path, capsys):
+    Canal(tmp_path, eco=True).status("aguardando_2fa", "Mande o código.")
+    saida = capsys.readouterr().out
+    assert "[aguardando_2fa] Mande o código." in saida
+    assert "python -m robo_pje otp" in saida
+    Canal(tmp_path).status("logado", "ok")
+    assert capsys.readouterr().out == ""

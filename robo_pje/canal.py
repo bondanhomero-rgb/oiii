@@ -42,8 +42,9 @@ def _com_retentativa(funcao, tentativas: int = 20):
 
 
 class Canal:
-    def __init__(self, pasta: Path | str):
+    def __init__(self, pasta: Path | str, eco: bool = False):
         self.pasta = Path(pasta)
+        self.eco = eco  # também mostra cada etapa na tela (uso manual no Prompt de Comando)
         self.pasta.mkdir(parents=True, exist_ok=True)
         self.arq_status = self.pasta / "status.json"
         self.arq_otp = self.pasta / "otp.txt"
@@ -70,6 +71,10 @@ class Canal:
         }
         self._gravar_atomico(self.arq_status, json.dumps(dados, ensure_ascii=False, indent=2))
         self.log(f"[{etapa}] {mensagem}")
+        if self.eco:
+            print(f"[{etapa}] {mensagem}", flush=True)
+            if etapa in ("aguardando_2fa", "2fa_recusado"):
+                print("    -> em outra janela, na pasta oiii:  python -m robo_pje otp SEU_CODIGO", flush=True)
         return dados
 
     def aguardar(self, apos_seq: int, timeout: float, intervalo: float = 0.5) -> dict:
