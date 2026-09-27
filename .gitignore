@@ -1,0 +1,10 @@
+# Dados da sessão e dos processos: nunca versionar
+estado/
+saida/
+perfil/
+processos.txt
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
